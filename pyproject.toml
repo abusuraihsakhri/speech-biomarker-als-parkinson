@@ -29,3 +29,7 @@ speech-biomarker-als-parkinson = "vocal_marker_ai.cli:main"
 [project.urls]
 Homepage = "https://github.com/abusuraihsakhri/speech-biomarker-als-parkinson"
 Repository = "https://github.com/abusuraihsakhri/speech-biomarker-als-parkinson.git"
+
+[tool.setuptools]
+packages = ["agents", "vocal_marker_ai"]
+py-modules = ["cli", "enrichment", "simulator", "vocal_marker_ai_app"]
