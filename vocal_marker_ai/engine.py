@@ -19,7 +19,7 @@ class FrontierDomainEngine:
             return {
                 "summary": "Primary Domain Boundary Deviation",
                 "details": f"Parameter value ({value:.3f}) exceeds operational threshold ({cls.PRIMARY_BOUND:.1f}) under experimental demonstration thresholds.",
-                "remediation": "Engage parameter recalibration and algorithmic verification routine.",
+                "remediation": "Review the prototype threshold and manually supplied value.",
             }
         return None
 
@@ -29,7 +29,7 @@ class FrontierDomainEngine:
             return {
                 "summary": "Critical Domain Condition Triggered",
                 "details": f"Secondary index ({value:.3f}) with CriticalFlag={is_critical} demands prioritized resolution.",
-                "remediation": "Initiate automated fail-safe state machine and telemetry alert dispatch.",
+                "remediation": "Review the manual priority flag and numeric input; no automatic escalation occurs.",
             }
         return None
 
@@ -40,6 +40,6 @@ class FrontierDomainEngine:
             return {
                 "summary": "Specification / Protocol Anomaly Identified",
                 "details": f"Telemetry status flag '{descriptor}' violates experimental demonstration thresholds conformance matrix.",
-                "remediation": "Execute automated rollback or secondary consensus verification.",
+                "remediation": "Review the supplied status descriptor.",
             }
         return None

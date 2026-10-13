@@ -52,7 +52,7 @@ def main(argv=None):
         dossier = coordinator.process(payload)
         print("=" * 80)
         print(f"  VOCALMARKER-AI: ACOUSTIC JITTER, SHIMMER & DYSARTHRIA BIOMARKER AGENT")
-        print(f"  Domain: Neurology AI | Standard: Clinical Acoustic Speech Analysis Protocol")
+        print(f"  Numeric demonstration; no audio analysis or clinical validation")
         print(f"  Task: {dossier['task_id']} | Status: [{dossier['overall_status']}] | Total Alerts: {dossier['total_alerts']}")
         print("=" * 80)
         for a in dossier["alerts"]:

@@ -23,7 +23,7 @@ class SystemIntegrityStatus(str, Enum):
 
 class SystemTaskPayload(BaseModel):
     task_id: str = Field(..., min_length=1, max_length=128, description="Unique task / case identifier")
-    target_identifier: str = Field(..., min_length=1, max_length=128, description="Entity, patient key, or genomic/cryptographic target")
+    target_identifier: str = Field(..., min_length=1, max_length=128, description="Non-identifying synthetic sample identifier")
     primary_metric: float = Field(..., allow_inf_nan=False, description="Primary domain measurement or score")
     secondary_metric: float = Field(default=0.0, allow_inf_nan=False, description="Secondary kinetic or confidence score")
     status_descriptor: str = Field(default="NOMINAL", min_length=1, max_length=64, description="Status code or phenotype descriptor")

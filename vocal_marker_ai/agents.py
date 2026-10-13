@@ -107,4 +107,4 @@ class VocalMarkerCoordinator:
         elif "standard" in q or "spec" in q:
             return "Active demonstration specifications are numeric prototype rules, not validated clinical acoustic standards."
         else:
-            return f"VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent executive coordinator online. Zero-telemetry on-premises surveillance active."
+            return f"VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent coordinator ready. The mock response does not invoke a model."
