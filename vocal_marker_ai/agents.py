@@ -105,6 +105,6 @@ class VocalMarkerCoordinator:
         if "status" in q or "ledger" in q:
             return f"VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent currently managing {len(self.execution_ledger)} execution tasks in air-gapped memory."
         elif "standard" in q or "spec" in q:
-            return "Active runtime operating strictly according to Clinical Acoustic Speech Analysis Protocol specifications."
+            return "Active demonstration specifications are numeric prototype rules, not validated clinical acoustic standards."
         else:
-            return f"VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent executive coordinator online. Zero-telemetry on-premises surveillance active."
+            return f"VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent coordinator ready. The mock response does not invoke a model."

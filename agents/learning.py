@@ -1,5 +1,5 @@
 """
-Autonomous Bayesian Calibration & Active Learning Feedback Engine for speech-biomarker-als-parkinson.
+Prototype concordance-based worker weighting (not Bayesian calibration) for speech-biomarker-als-parkinson.
 """
 import math
 from typing import Dict, Any, List, Optional
