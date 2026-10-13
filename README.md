@@ -1,199 +1,75 @@
-# Speech Biomarker ALS Parkinson
+# Speech Biomarker ALS / Parkinson Project
 
-> **Domain:** Clinical Decision Support & Biomedical Computing
-> **Reference Guidelines & Standards:** `Standard Clinical Formulations & ISO/IEC Quality Frameworks`
+An experimental Python rules engine and browser demonstration for evaluating **user-supplied numeric fields** and status labels. Despite the repository name, the current implementation **does not ingest audio, calculate F0/jitter/shimmer/HNR/formants, or predict ALS or Parkinson's disease**. The thresholds are demonstration parameters, **not clinically derived diagnostic cutoffs**.
 
-<div align="center">
+## Browser demonstration
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg?logo=fastapi&logoColor=white)
-![Audit Trail](https://img.shields.io/badge/Audit-HMAC--SHA256_Tamper--Evident-brightgreen.svg)
-![Zero-PHI Guard](https://img.shields.io/badge/Guard-Zero--PHI_Outbound-blue.svg)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)
+The static interface lives in [web/](web/) and works without a Python server. It evaluates sample IDs, numeric thresholds, a status keyword, and a manually selected priority flag, then displays and exports JSON. The evaluation runs entirely in your browser; no API requests are made. Avoid entering patient-identifiable data.
 
-</div>
-
----
-
-## 📖 What It Does
-
-Speech Biomarker ALS Parkinson is an enterprise-grade analytical engine for detecting vocal biomarkers associated with Amyotrophic Lateral Sclerosis (ALS) and Parkinson's disease. The system analyzes acoustic features including:
-
-- **Jitter & Shimmer Perturbations** - Micro-perturbations in fundamental frequency and amplitude
-- **Dysarthria Indicators** - Speech motor control degradation markers
-- **Formant Frequency Analysis** - Vocal tract resonance patterns
-- **Harmonics-to-Noise Ratio (HNR)** - Voice quality assessment
-
-The system employs a multi-agent consensus architecture with specialized workers for invariant quality control, safety escalation, and protocol conformance verification.
-
----
-
-## ⚙️ Key Capabilities & Algorithmic Modules
-
-- **Deterministic Calculation Engine**: Strict compliance with standard reference formulations and thresholds.
-- **Risk & Urgency Classification**: Multi-tier categorization (ROUTINE, ELEVATED, CRITICAL_STAT) with automated clinical/operational action recommendations.
-- **Validation & Guardrails**: Rigorous input bounds checking and anomaly detection.
-- **Multi-Agent Consensus**: Three specialized workers evaluate each task independently.
-- **Zero-PHI Outbound Protection**: Prevents protected health information leakage.
-
-### Worker Agents
-
-| Worker | Responsibility |
-|--------|----------------|
-| `InvariantQCWorker` | Primary metric threshold boundary audit |
-| `SafetyEscalationWorker` | Critical safety interlock and emergency escalation |
-| `ProtocolConformanceWorker` | Specification conformance and anomaly triage |
-
----
-
-## 💻 Installation
+To run it locally:
 
 ```bash
-# Clone the repository
-git clone https://github.com/abusuraihsakhri/speech-biomarker-als-parkinson.git
-cd speech-biomarker-als-parkinson
-
-# Install dependencies
-pip install fastapi uvicorn pydantic pytest
+python -m http.server 8765 --directory web
+# open http://127.0.0.1:8765/
 ```
 
----
+The repository also includes a GitHub Pages deployment workflow. See the repository's Pages environment for the deployment URL and status.
 
-## 💻 CLI Quickstart & Usage
+## Python features
 
-### 1. Guided Interactive Mode
+- `agents/`: Pydantic-validated task payloads, three rule-based workers, coordinator, in-memory HMAC-chained audit entries, and FastAPI endpoints
+- `vocal_marker_ai/`: a second threshold-driven coordinator and CLI (not acoustic signal extraction)
+- `enrichment.py`: placeholder evaluators based on a common numeric threshold; not implemented acoustic, language, or longitudinal analytics
+- `cli.py`: single-task audit, batch CSV processing, mock chat response, audit-chain check, and API startup
+- `web/`: a standalone, deterministic JavaScript adaptation of the `agents/workers.py` thresholds, without server-side audit signing
+
+Python rules: primary measurement **greater than 25** triggers a warning; secondary measurement **greater than 12** triggers a warning; a manually set critical flag changes the priority tier; certain keywords in the status descriptor trigger warnings. The `vocal_marker_ai` coordinator uses a different secondary threshold (**greater than 10**). Neither set of thresholds is clinically validated.
+
+## Install and run
+
+Requires Python 3.9+; CI tests Python 3.10–3.12.
+
 ```bash
-python cli.py
-```
-
-### 2. Direct Parameterized Evaluation
-```bash
-python cli.py audit --task-id TASK-001 --target KEY-01 --primary 28.5 --secondary 14.2 --critical --status DISCORDANT
-```
-
-### 3. Batch Processing
-```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[api,test]'
+python -m pytest -q
+python cli.py audit --task-id DEMO-001 --target SAMPLE-001 --primary 29.4 --secondary 14.8
 python cli.py batch -i sample.csv -o results.csv
-```
-
-### 4. Verify Audit Trail Integrity
-```bash
 python cli.py verify-audit
-```
-
-### 5. Launch REST API Server
-```bash
 python cli.py serve --host 127.0.0.1 --port 8000
 ```
 
-### Parameter Reference
-- `--task-id`: Unique task/case identifier (required, 1-128 chars)
-- `--target`: Entity or specimen identifier (required, 1-128 chars)
-- `--primary`: Primary measurement value (float)
-- `--secondary`: Secondary measurement value (float)
-- `--critical`: Flag for emergency escalation (boolean)
-- `--status`: Status descriptor (1-64 chars, e.g., NOMINAL, DISCORDANT, ANOMALY)
+API documentation is available at `http://127.0.0.1:8000/docs`; `POST /api/audit` takes a `SystemTaskPayload`, while `GET /health` and `GET /metrics` provide basic JSON status. The mock chat endpoint does not contact any model provider.
 
-### Input Data Schema (CSV)
-
-| Field | Description | Requirement |
-|:------|:------------|:------------|
-| `task_id` | Parameter / observation metric | Required |
-| `target_identifier` | Parameter / observation metric | Required |
-| `primary_metric` | Primary measurement value (float) | Required |
-| `secondary_metric` | Secondary measurement value (float) | Optional |
-| `is_critical_flag` | Emergency escalation flag (true/false) | Optional |
-| `status_descriptor` | Status code or phenotype | Optional |
-
----
-
-## 🛡️ Security & Enterprise Architecture
-
-* **Zero-PHI Outbound Interceptor:** Active AST and regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers.
-* **Tamper-Evident HMAC-SHA256 Audit Trail:** Chained, cryptographically signed logs for every evaluation and state transition.
-* **Secure Secret Management:** HMAC key sourced from `AUDIT_SECRET_KEY` environment variable or cryptographically random fallback.
-* **Air-Gapped LLM Reasoning Adapter:** Agnostic integration for local Ollama instances (`llama3`, `mistral`), Claude 3.5 Sonnet, GPT-4o, and deterministic test mocks.
-* **Active Learning Bayesian Calibration:** Dynamic tracker updating worker reliability weights and monitoring Brier calibration drift.
-* **FastAPI & Prometheus Telemetry:** Exposes OpenAPI 3.1 REST endpoints and operational Prometheus metrics (`/metrics`).
-
----
-
-## 🧪 Testing & Verification
-
-Run the automated test suite:
+For a container deployment, set a random signing key in the environment before using Compose:
 
 ```bash
-pytest -v
+export AUDIT_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_hex(32))')"
+docker compose up --build
 ```
 
-Execute high-throughput batch simulation benchmarks:
+The optional `AUDIT_LOG_READ_TOKEN` environment variable enables `GET /api/audit/logs` for requests supplying `X-Audit-Token`. Without it, that endpoint returns HTTP 403. Do not expose the API publicly without appropriate authentication, TLS, and operational controls.
+
+## Security and data handling
+
+The browser demonstration retains results only in tab memory and in JSON files explicitly exported by the user. The Python server stores its task dossiers and signed audit entries **in process memory**, not durable storage; entries and the auto-generated signing key do not survive a restart. Audit-chain verification recomputes each HMAC and verifies links between stored entries, but cannot prove the completeness of a truncated in-memory trail without an external trust anchor.
+
+The identifier guard uses a small set of regular expressions and **is not a comprehensive PHI de-identification mechanism**. Never send identifiable patient data to this prototype. The fixed key formerly included in Compose must be treated as exposed if it was ever used and replaced in any deployment.
+
+## Tests and limitations
 
 ```bash
-python simulator.py --tasks 1000 --concurrency 8
+python -m pytest -q
+node --check web/app.js
+node --test web/test_app.cjs
+python simulator.py 100
 ```
 
-### Test Coverage
+The GitHub Actions CI workflow tests Python 3.10–3.12 and the browser's rule functions. It does not constitute clinical, security, or regulatory validation. Full speech biomarker processing would require verified audio I/O, signal-processing algorithms, reference datasets, analytical validation, and independent clinical evaluation.
 
-| Test Module | Description |
-|------------|-------------|
-| `test_phi_guard_enforcement` | Validates PHI detection and blocking |
-| `test_specialized_workers` | Tests individual worker agent logic |
-| `test_supervisor_consensus_and_audit` | Verifies multi-agent consensus and audit trail |
-| `test_sub_agents` | Tests vocal marker AI sub-agents |
-| `test_coordinator` | Validates coordinator consensus logic |
-| `test_cli` | CLI command integration tests |
-| `test_enrichment_suite_execution` | Enrichment feature execution tests |
-| `test_enrichment_threshold_escalation` | Enrichment threshold boundary tests |
+Browser compatibility: current Chromium, Firefox, and Safari versions with standard ECMAScript and Blob downloads.
 
----
+## License
 
-## 🐳 Container Deployment
-
-```bash
-docker build -t speech-biomarker-als-parkinson .
-docker run -p 8000:8000 speech-biomarker-als-parkinson
-```
-
----
-
-## 📁 Project Structure
-
-```
-speech-biomarker-als-parkinson/
-├── agents/                    # Enterprise analytical agents
-│   ├── __init__.py           # Package initialization
-│   ├── api.py                # FastAPI REST endpoints
-│   ├── base.py               # Security, PHI guard, audit trail
-│   ├── learning.py           # Bayesian calibration engine
-│   ├── llm_factory.py        # LLM client factory
-│   ├── metrics.py            # Prometheus metrics collector
-│   ├── models.py             # Pydantic data models
-│   ├── streamer.py           # WebSocket telemetry streamer
-│   ├── supervisor.py         # Master orchestrator
-│   └── workers.py            # Specialized worker agents
-├── vocal_marker_ai/          # Vocal marker AI engine
-│   ├── __init__.py           # Package initialization
-│   ├── agents.py             # Sub-agent implementations
-│   ├── cli.py                # CLI interface
-│   ├── engine.py             # Core algorithmic engine
-│   ├── models.py             # Data models
-│   └── server.py             # FastAPI server factory
-├── tests/                    # Test suite
-│   ├── test_speech_biomarker_als_parkinson.py
-│   ├── test_vocal_marker_ai.py
-│   └── test_enrichment.py
-├── enrichment.py             # Domain enrichment features
-├── cli.py                    # Main CLI entry point
-├── simulator.py              # High-throughput simulator
-├── pyproject.toml            # Project configuration
-├── Dockerfile                # Container configuration
-├── sample.csv                # Sample input data
-└── sample_payload.json       # Sample API payload
-```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE).
