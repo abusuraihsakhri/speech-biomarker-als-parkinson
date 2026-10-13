@@ -15,7 +15,7 @@ def create_app():
 
         app = FastAPI(
             title="VocalMarker-AI: Acoustic Jitter, Shimmer & Dysarthria Biomarker Agent",
-            description="Computes fundamental frequency (F0), jitter %, shimmer %, Harmonics-to-Noise Ratio (HNR), and formant frequencies (F1/F2).",
+            description="Runs numeric threshold rules. Does not accept audio or compute acoustic features.",
             version="2.0.0-FRONTIER",
         )
 

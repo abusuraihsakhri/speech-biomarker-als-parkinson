@@ -9,7 +9,7 @@ function evaluateTask(raw) {
     throw new Error("A status descriptor is required (maximum 64 characters).");
   const primary = Number(raw.primary_metric);
   const secondary = Number(raw.secondary_metric);
-  if (raw.primary_metric === "" || raw.secondary_metric === "" ||
+  if (String(raw.primary_metric ?? "").trim() === "" || String(raw.secondary_metric ?? "").trim() === "" ||
       !Number.isFinite(primary) || !Number.isFinite(secondary))
     throw new Error("Enter finite numeric values for both measurements.");
   const critical = raw.is_critical_flag === true;
